@@ -1,0 +1,29 @@
+version: '1'
+services:
+  redis:
+    image: redis # 역시 alpine 이미지를 사용해줍니다.
+    container_name: cachee
+    #expose와 ports의 차이
+    expose:
+      - 6379
+    networks:
+      - test2
+  api-server:
+    container_name: api-server
+    build: ./
+    # volumes:
+    #   - ./:/var/www/app
+    networks:
+      - test2
+    ports:
+      - 3000:3000
+    #컨테이너가 실행될 때 수행할 명령어를 설정
+    #depends_on과 links 차이
+    depends_on:
+      - redis
+    #command와 endtrypoint 차이
+    command: sh -c 'npm i && node index.js'
+    #Entrypoint : 도커 컨테이너 실행할 때, 고정적으로 실행되는 스크립트
+networks:
+  test2:
+    driver: bridge

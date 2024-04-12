@@ -1,0 +1,17 @@
+{
+  "name": "dockertest",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/mysql": "^4.2.0",
+    "@fastify/redis": "^6.1.1",
+    "fastify": "4.26.2"
+  }
+}

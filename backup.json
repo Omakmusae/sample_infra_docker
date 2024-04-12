@@ -1,0 +1,32 @@
+
+version: '1'
+services:
+  redis:
+    image: redis # 역시 alpine 이미지를 사용해줍니다.
+    container_name: cachee
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    expose:
+      - 6379
+    networks:
+      - test
+  api-server:
+    build: ./
+    # volumes:
+    #   - ./:/var/www/app
+    networks:
+      - test
+    external_links:
+      - redis
+    expose:
+      - 3000
+    ports:
+      - 3000: 3000
+    #컨테이너가 실행될 때 수행할 명령어를 설정
+    command: sh -c 'npm i && node index.js'
+    depends_on:
+      - redis
+
+networks:
+  test:
+    driver: bridge
