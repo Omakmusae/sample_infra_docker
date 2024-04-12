@@ -1,0 +1,10 @@
+DROP DATABASE IF EXISTS docker;
+
+CREATE DATABASE docker;
+USE docker;
+
+CREATE TABLE lists(
+    id INTEGER AUTO_INCREMENT,
+    value TEXT,
+    PRIMARY KEY (id)
+)

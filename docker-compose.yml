@@ -1,9 +1,43 @@
 version: '1'
 services:
+  mysql:
+    container_name: mysqll
+    image: mysql:latest
+    #
+    volumes:
+      - ./db/:/home/
+    expose:
+      - 3306
+    environment:
+      - MYSQL_DATABASE=docker
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=calsadmin1!
+      - TZ=Asia/Seoul
+    networks:
+      - test2
+    restart: unless-stopped
+    #https://velog.io/@cabbage/%EB%AC%B8%EC%A0%9C%ED%95%B4%EA%B2%B0-%EB%8F%84%EC%BB%A4-%EC%BB%B4%ED%8F%AC%EC%A6%88%EC%97%90%EC%84%9C-DB-%EC%97%B0%EA%B2%B0-%EC%A7%80%EC%97%B0-%EC%9D%B4%EC%8A%88
+    # healthcheck:
+    #   test:
+    #     [
+    #       'CMD',
+    #       'mysqladmin',
+    #       'ping',
+    #       '-h',
+    #       'localhost',
+    #       '-u',
+    #       'root',
+    #       'calsadmin1!'
+    #     ]
+    #   interval: 20s
+    #   timeout: 30s
+    #   retries: 5
+    #   start_period: 30s
   redis:
     image: redis # 역시 alpine 이미지를 사용해줍니다.
     container_name: cachee
     #expose와 ports의 차이
+    restart: on-failure:10
     expose:
       - 6379
     networks:
@@ -19,8 +53,10 @@ services:
       - 3000:3000
     #컨테이너가 실행될 때 수행할 명령어를 설정
     #depends_on과 links 차이
-    depends_on:
-      - redis
+    # depends_on:
+    #   redis:
+    #   mysql:
+    #     condition: service_healthy
     #command와 endtrypoint 차이
     command: sh -c 'npm i && node index.js'
     #Entrypoint : 도커 컨테이너 실행할 때, 고정적으로 실행되는 스크립트

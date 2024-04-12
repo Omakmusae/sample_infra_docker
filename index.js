@@ -9,19 +9,21 @@ const apiServer = fastify({
 })
 
 //1. MySQL 연결 설정
-//connectionString: "mysql://유저이름:db비밀번호@127.0.0.1/db스키마이름",
-// apiServer.register(db, {
-//     connectionString: 'mysql://root:calsadmin1!@localhost:3306/docker'
-// })
-// apiServer.get('/testMysql', function (req, reply) {
-//     apiServer.mysql.query(
-//         'SELECT * FROM qt_user',
-//         function onResult(err, result) {
-//             reply.send(err || result)
-//         }
-//     )
-//     console.log('mysql db 조회 성공')
-// })
+//connectionString: "mysql://유저이름:db비밀번호@ip주소 또는 도메인네임/db스키마이름",
+await apiServer.register(db, {
+    promise: true,
+    connectionString: 'mysql://root:calsadmin1!@mysqll:3306/docker'
+})
+
+await apiServer.get('/testMysql', async (req, reply) => {
+    console.log('mysql db 조회 전')
+    const connection = await apiServer.mysql.getConnection()
+    const [rows, fields] = await connection.query('SELECT * FROM lists')
+    connection.release()
+    console.log('mysql db 조회 성공')
+    return rows[0]
+
+})
 
 //2. Redis 연결 설정
 //https://github.com/fastify/fastify-redis
@@ -57,6 +59,7 @@ const serverStart = async () => {
         process.exit(1)
     }
 }
+
 console.log('서버 시작')
 
 serverStart()
